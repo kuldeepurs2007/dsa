@@ -1,0 +1,163 @@
+#include<iostream>
+using namespace std;
+
+class Node
+{
+	public:
+		int data;
+		Node*next;
+
+	Node(int val){
+		data = val;
+		next = NULL;
+		}
+};
+
+class singlylinkedlist
+{
+	public:
+		Node*head;
+		int size;
+	singlylinkedlist(){
+		head = NULL;
+		size = 0;
+		}
+
+	void append(int val){
+		Node*newNode = new Node(val);
+	if(head == NULL){
+		head = newNode;
+		}
+	else{
+		Node*temp = head;
+		while(temp->next != NULL){
+			temp = temp->next;
+			}
+			temp->next = newNode;
+			}
+			size++;
+		}
+
+	void insertatstart(int val){
+		Node*newNode = new Node(val);
+		newNode->next = head;
+		head = newNode;
+		size++;
+		}
+		
+	void insertatpos(int pos, int val){
+		Node*newNode = new Node(val);
+	if(pos<=size){
+		if(head == NULL){
+			head = newNode;
+			}
+		else{
+			Node*temp = head;
+			int count = 1;
+			while(temp->next != NULL){
+				count++;
+			if(count == pos){
+				break;
+			}
+				temp = temp->next;
+			}
+				Node*currentNode = temp->next;
+				temp->next = newNode;
+				newNode->next = currentNode;
+			}
+		}
+	}
+
+	void deleteatstart() {
+    if (head == NULL) {
+        cout << "List is empty" << endl;
+        return;
+    }
+    
+    Node* temp = head;
+    head = head->next; // Move head to the next node
+    delete temp;       // Free memory of the old head
+    size--;
+}
+
+void deleteatend() {
+    if (head == NULL) {
+        cout << "List is empty" << endl;
+        return;
+    }
+    
+    // Case 2: Only one node in the list
+    if (head->next == NULL) {
+        delete head;
+        head = NULL; // Prevent dangling pointer
+        size--;
+        return;
+    }
+    
+    // Case 3: Multiple nodes. Traverse to the second-to-last node
+    Node* temp = head;
+    while (temp->next->next != NULL) {
+        temp = temp->next;
+    }
+    
+    // temp is now at the second-to-last node
+    Node* lastNode = temp->next; 
+    temp->next = NULL; // Disconnect the last node
+    delete lastNode;   // Free memory
+    size--;
+}
+
+void deleteatpos(int pos) {
+    // Assuming 0-based indexing. Valid positions are 0 to size-1
+    if (pos < 0 || pos > size || head == NULL) {
+        cout << "Invalid position" << endl;
+        return;
+    }
+    
+    if (pos == 0) {
+        deleteatstart();
+        return;
+    }
+    
+    // Traverse to the node completely preceding the target position (pos - 1)
+    Node* current = head;
+    for (int i = 0; i < pos - 1; i++) {
+        current = current->next;
+    }
+    
+    // current is now at (pos - 1)
+    Node* temp = current->next;       // temp is the node to be deleted (at pos)
+    current->next = temp->next;       // Bypass the target node
+    delete temp;                      // Free memory
+    size--;
+}
+
+
+	void display(){
+		Node*temp = head;
+		while(temp != NULL){	
+			cout<< temp->data << "->";
+			temp = temp->next;
+			}
+			cout<<"NULL"<<endl;
+			}
+	};
+
+int main(){
+singlylinkedlist sll;
+sll.append(30);
+sll.append(10);
+sll.append(20);
+cout<<"Actual list:"<<endl;
+sll.display();
+cout<<"After insert operations"<<endl;
+sll.insertatstart(50);
+sll.insertatpos(2,40);
+sll.display();
+cout<<"After delete operations"<<endl;
+sll.deleteatstart();
+sll.deleteatpos(3);
+sll.deleteatend();
+sll.display();
+return 0;
+}
